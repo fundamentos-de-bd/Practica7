@@ -1,0 +1,182 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{multirow}
+\usepackage{diagbox}
+\usepackage{booktabs}
+\usepackage{anysize} 
+\usepackage{hyperref}
+\usepackage{helvet}
+\renewcommand\refname{Referencias}
+\marginsize{2cm}{2cm}{2.0cm}{2cm}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{scrextend}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\addtokomafont{labelinglabel}{\sffamily}
+
+%% Graphics
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{gensymb}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{float}
+\setlength{\parindent}{0cm}
+
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=cyan,
+	citecolor=blue
+}
+
+
+
+
+
+\begin{document}
+	
+	\title{Fundamentos de Bases de Datos \\
+		Practica 7\\ Normalización de la Base de Datos
+	} 
+	\author{}
+	\date{16 de Abril del 2019}
+	\maketitle
+	
+
+El objetivo en esta práctica es normalizar la base de datos de acuerdo al caso de uso que hemmos venido usando. Normalizar la base de datos evita almacenar información redundante,  para esta practica se usa la tercera formal normal (3NF).
+
+\section{Definiendo dependencias funcionales para el caso de uso}
+
+\subsection{Relacion Producto}
+
+%\noindent \textbf{PRODUCTO}\textit{(Id\_Producto, Código\_Barras, Id\_Producción, %Fecha\_Cad, Precio, Presentación, Cantidad, esRefrigerado, Marca, Id\_Departamento, %Id\_Venta, Descripción)}\\
+
+
+
+Para facilitar la definición de las dependencias funcionales de la relación Producto nos conviene etiquetarla de la siguiente manera:
+
+\begin{align*}
+\overbrace{ \textbf{PRODUCTO}}^{\textbf{{P}}}&(\overbrace{ Id\_Producto}^{\textbf{\textcolor{RoyalBlue}{A}}},\,\overbrace{Codigo\_Barras}^{\textbf{\textcolor{RoyalBlue}{B}}},\,\overbrace{Id\_Produccion}^{\textbf{\textcolor{RoyalBlue}{C}}},\,\overbrace{Fecha\_Cad}^{\textbf{\textcolor{RoyalBlue}{D}}},\,\overbrace{Precio}^{\textbf{\textcolor{RoyalBlue}{E}}},\,\overbrace{Presentacion}^{\textbf{\textcolor{RoyalBlue}{F}}},\\&\overbrace{Cantidad}^{\textbf{\textcolor{RoyalBlue}{G}}},\,\overbrace{esRefrigerado}^{\textbf{\textcolor{RoyalBlue}{H}}},\,\overbrace{Marca}^{\textbf{\textcolor{RoyalBlue}{I}}},\,\overbrace{Id\_Departamento}^{\textbf{\textcolor{RoyalBlue}{J}}},\,\overbrace{Id\_Venta}^{\textbf{\textcolor{RoyalBlue}{K}}},\,\overbrace{Descripcion}^{\textbf{\textcolor{RoyalBlue}{L}}})\\
+&= \textbf{P}(\mathrm{A,B,C,D,E,F,G,H,I,J,K,L})
+\end{align*}
+
+%\overbrace{,}^{\textbf{\textcolor{Blue}{}}}
+Las siguientes dependencias funcionales para esta relacion son:\\
+
+$$\mathcal{F}=\mathrm{\{ BIFG \rightarrow E, BC \rightarrow D, B \rightarrow FGHI \}}$$
+
+Para normalizar primero tenemos que calcular la cerradura para cada dependencia funcional en $\mathcal{F}$,\\
+
+
+$\mathrm{\{\textcolor{RoyalBlue}{BIFG}\}+= \{\textcolor{RoyalBlue}{BIFG}EH\}}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{BC}\}+= \{\textcolor{RoyalBlue}{BC}FGHIDE\}}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}FGHIE\}}$\\
+
+
+Observamos que a la cerradura de BC es que contiene el mayor numero de atributos y unicamente le faltan algunos atributos, por lo tanto una llave para \textbf{P} es \underline{ABCJKL} \\
+
+Lo siguiente es buscar violaciones a la tercera forma normal, para eso hay que ver que no aparezca la llave en las dependecias funcionales, observamos que las tres dependencias son violaciones a la 3NF, así que se toma una dependencia funcional con mas de un atributo a la izquierda para ver si alguno de los atributos es superfluo.\\
+
+\subsubsection{Superfluos a la Izquierda}
+\noindent Tomamos $\mathrm{BIFG \rightarrow E}$, luego verificamos si algun atributo a la izquierda es superfluo. \\
+\begin{itemize}
+
+
+\item ¿B es superfluo? $\mathrm{IFG \rightarrow E}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{IFG}\}+= \{\textcolor{RoyalBlue}{IFG}\}}$\\
+ 	
+Como E no aparece en la cerradura de IFG, por lo tanto se concluye que B no es superfluo.\\
+
+\item ¿I es superfluo? $\mathrm{BFG \rightarrow E}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{BFG}\}+= \{\textcolor{RoyalBlue}{BFG}HIE\}}$\\
+
+E aparece en la cerradura de BFG, por lo tanto se concluye que I es superfluo.\\
+
+\item ¿F es superfluo? $\mathrm{BIG \rightarrow E}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{BIG}\}+= \{\textcolor{RoyalBlue}{BIG}FHE\}}$\\
+
+E aparece en la cerradura de BIG, por lo tanto se concluye que F es superfluo.\\
+
+\item ¿G es superfluo? $\mathrm{BIF \rightarrow E}$\\
+
+$\mathrm{\{\textcolor{RoyalBlue}{BIF}\}+= \{\textcolor{RoyalBlue}{BIF}GHE\}}$\\
+
+E aparece en la cerradura de BIF, por lo tanto se concluye que G es superfluo.\\
+
+\end{itemize}
+
+\noindent Como resultado de buscar superfluos por la izquierda obtenemos una $\mathcal{F}$ nueva,\\
+
+$$\mathcal{F}=\mathrm{\{ B \rightarrow E, BC \rightarrow D, B \rightarrow FGHI \}}$$ \\ 
+y por la regla de la union obtenemos $$\mathcal{F}=\mathrm{\{ BC \rightarrow D, B \rightarrow FGHIE \}}$$ \\
+
+\subsubsection{Superfluos por la derecha}
+
+Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la derecha.\\
+
+\begin{itemize}
+	\item ¿F es superfluo? $\mathrm{B \rightarrow GHIE}$ \\
+	$$\mathcal{F}'=\mathrm{\{ BC \rightarrow D, B \rightarrow GHIE \}}$$\\
+	Calculamos la cerradura de B usando a $\mathcal{F}'$\\
+	$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}GHIE\}}$\\
+	
+	F no aparece en la cerradura de B, por lo tanto F no es superfluo.
+	
+	\item ¿G es superfluo? $\mathrm{B \rightarrow FHIE}$ \\
+	$$\mathcal{F}'=\mathrm{\{ BC \rightarrow D, B \rightarrow FHIE \}}$$\\
+	Calculamos la cerradura de B usando a $\mathcal{F}'$\\
+	$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}FHIE\}}$\\
+	
+	G no aparece en la cerradura de B, por lo tanto G no es superfluo.
+	
+	\item ¿H es superfluo? $\mathrm{B \rightarrow FGIE}$ \\
+	$$\mathcal{F}'=\mathrm{\{ BC \rightarrow D, B \rightarrow FGIE \}}$$\\
+	Calculamos la cerradura de B usando a $\mathcal{F}'$\\
+	$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}FGIE\}}$\\
+	
+	H no aparece en la cerradura de B, por lo tanto H no es superfluo.
+	
+	\item ¿I es superfluo? $\mathrm{B \rightarrow FGHE}$ \\
+	$$\mathcal{F}'=\mathrm{\{ BC \rightarrow D, B \rightarrow FGHE \}}$$\\
+	Calculamos la cerradura de B usando a $\mathcal{F}'$\\
+	$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}FGHE\}}$\\
+	
+	I no aparece en la cerradura de B, por lo tanto I no es superfluo.
+	
+	\item ¿E es superfluo? $\mathrm{B \rightarrow FGHI}$ \\
+	$$\mathcal{F}'=\mathrm{\{ BC \rightarrow D, B \rightarrow FGHI \}}$$\\
+	Calculamos la cerradura de B usando a $\mathcal{F}'$\\
+	$\mathrm{\{\textcolor{RoyalBlue}{B}\}+= \{\textcolor{RoyalBlue}{B}FGHI\}}$\\
+	
+	E no aparece en la cerradura de B, por lo tanto E no es superfluo.\\
+	
+\end{itemize}	
+	Así que la $\mathcal{F}_{min}$ es,\\
+	
+	$$\mathcal{F}'_{min}= \mathrm{\{ BC \rightarrow D, B \rightarrow FGHIE \}}$$
+	
+	Esto quiere decir que las relaciones quedan como: \\
+	
+	$\mathrm{R_1(B,C,D)}\,\,\, con \,\,\, \mathrm{ BC \rightarrow D}$\\
+	$\mathrm{R_2(B,F, G, H, I, E)}\,\,\, con \,\,\, \mathrm{ B \rightarrow FGHIE}$\\
+	
+	El siguiente paso es verificar si la llave esta en alguna relaciones obtenidas, como la llave no aparece en ninguna relación la solución es agregar otra relación que la contenga.\\
+	
+	
+	$\mathrm{R_3(A,B,C,J,K,L)}\,\,\, con \,\,\, \mathrm{ ABCJKL \rightarrow ABCJKL}$\\
+
+
+   $\therefore \,\, \mathrm{R_1, R_2, R_3} $  es la normalización en 3NF para la relación Producto. 
+	
+\end{document}
