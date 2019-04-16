@@ -437,7 +437,7 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
    	
    	$$\mathcal{F}_{min}=\{ tdfrP \rightarrow S,\, tdP \rightarrow hehs\}$$\\
    	
-   	\subsection{Superfluos a la Derecha}
+   	\subsubsection{Superfluos a la Derecha}
    	
    	Para buscar atributos superfluos por la derecha elegimos la siguiente dependencia que tine mas de un atributo a la derecha : $tdP \rightarrow hehs$
    	
@@ -469,7 +469,8 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
    $R_1(td,fr,P,S)$ con $ tdfrP \rightarrow S$  \\
    $R_2(td,P,he,hs)$ con $ tdP \rightarrow hehs $\\
    
-   Pero de estas dos relaciones ninguna de ellas contiene a la llave, entonces agregamos una nueva relación que la contenga $R_3(ie,C,td,fr,P)$ con  $ieCtdfrP \rightarrow ieCtdfrP$.\\
+   Pero de estas dos relaciones ninguna de ellas contiene a la llave, entonces agregamos una 
+   nueva relación que la contenga $R_3(ie,C,td,fr,P)$ con  $ieCtdfrP \rightarrow ieCtdfrP$.\\
    	
    	$\therefore \,\, {R_1, R_2, R_3} $  es la normalización en 3NF para la relación Empleado.
    	
@@ -501,5 +502,83 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 		\caption{Esquema normalizado}
 		\label{fg:en}
 	\end{figure}
+	
+	\section*{Preguntas extra}
+	
+	\subsection{Oracle Database Types}
+	Para  responder a esto, consultamos en la página de Oracle la documentación
+	de las verisones usadas, especificamente bajo las guías de \textit{Administración}
+	en el apartado de \textit{\textbf{Database Concepts}}:
+	    \begin{itemize}
+	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/
+	        cncpt/database-concepts.pdf}{Oracle DB Enterprise Edition 18c}.
+	        \item \href{https://docs.oracle.com/cd/B28359_01/server.111/b28318/datatype
+	        .htm#CNCPT413}{Oracle DB Enterprise Edition 11g, Release 1}.
+	    \end{itemize}
+
+	\subsubsection{En la versión 18c}
+	Se listan las siguientes categorías de tipos de datos:
+	\begin{itemize}
+	\small
+	    \item Character Data Types [CHAR, VARCHAR2, NCHAR, NVARCHAR2]
+        \item Numeric Data Types [NUMBER, BINARY\_FLOAT, BINARY\_DOUBLE]
+        \item Datetime Data Types [DATE, TIMESTAMP, DATETIME(2)]
+        \item Rowid Data Types [ROWID(categorizados como físicos, lógicos, foráneos ó 
+              universales)]
+        \item Format Models and Data Types //'moldes' de los tipos de datos como cadenas,
+              metadatos
+    \end{itemize}
+	
+	Aparte de estos, también menciona la existencia de \textit{raw}, \textit{large objects
+	(LOBs)}, y \textit{collections}, junto con los tipos que se pueden acceder a través de 
+	PL/SQL. \footnote{variables, 'constantes' ( Booleanos?), referencias y tipos, tanto 
+	compuestos como definidos por el usuario.}
+	
+	\subsubsection{En la versión 11g}
+	Se pueden encontrar las siguientes categorías y tipos de datos:
+	\begin{itemize}
+	\small
+	    \item Character Data Types [CHAR, VARCHAR2, NCHAR, NVARCHAR2, LONG]
+        \item Numeric Data Types [NUMBER, BINARY\_FLOAT, BINARY\_DOUBLE]
+        \item Datetime Data Types [DATE, TIMESTAMP, DATETIME(2)]
+        \item LOBs [BLOB, CLOB, NCLOB, BFILE]
+        \item RAWs [RAW, LONG\_RAW]
+        \item Rowid Data Types [ROWID, UROWID]
+    \end{itemize}
+	
+	Vale la pena notar que LOB y RAW también existen el a versión 18c, aunque sólo se
+	mencione su existencia. En esta documentación también aparecen como categorías los 
+	\textit{ANSI, DB2, SQL/DS, XML, URI, Object y Object Views} pero recuperando la idea 
+	de la documentación de la versión 18c, decidimos no listarlos como a los anteriores.
+	
+	\subsection{Restricciones para 'new\_name' (RENAME)}
+	
+	Consultamos  de nuevo en la página de Oracle la documentación de cada versión las 
+	guías de\textit{Administración} pero esta vez en el apartado \textit{\textbf{SQL 
+	Language Reference}}. En el caso de la versión 18c podríamos haber consultado el
+	equivalente en PL/SQL pero en este no mencionaba nada sobre 'new\_name' concreto.
+	    \begin{itemize}
+	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/
+	        sqlrf/sql-language-reference.pdf}{Oracle DB Enterprise Edition 18c}.
+	        \item \href{https://docs.oracle.com/cd/B28359_01/server.111/b28286/stateme
+	        nts_9019.htm#SQLRF01608}{Oracle DB Enterprise Edition 11g, Release 1}.
+	    \end{itemize}
+    Nótese que en ambas aparece el mismo texto, con cási el mismo formato (es esto un
+    copy-paste?):\\
+    \textbf{new\_name}
+    {Specify the new name to be given to the existing object. The new name must not
+    already be used by another schema object in the same namespace and must follow
+    the rules for naming schema objects.
+
+    \textbf{Restrictions on Renaming Objects}
+    Renaming objects is subject to the following restrictions:
+    \begin{itemize}
+        \item {You cannot rename a public synonym. Instead, drop the public synonym and
+        then re-create the public synonym with the new name.}
+        \item {You cannot rename a type synonym that has any dependent tables or 
+        dependent valid user-defined object types.}
+    \end{itemize}}
+    
+    Con lo cual debería quedar resuelta la pregunta.
 	
 \end{document}
