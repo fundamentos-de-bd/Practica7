@@ -14,15 +14,15 @@ Para crear la base de datos
 
     Donde ADMIN es el usuario administrativo, y PASSWORD su contraseña.
 * Después hay que crear un usuario usando el script proporcionado
-* 
+  
         SQL > START tblspace.sql;
 
 * Después hay que cambiar la sesión a la de ese usuario.
-* 
+  
         SQL > CONNECT USER70/p299007346403;
 
 * Y finalmente crear las tablas usando el script proporcionado
-* 
+  
         SQL > START DDL.sql;
 
 Si se desea ver la lista de tablas creeadas, se puede hacer ejecutado
