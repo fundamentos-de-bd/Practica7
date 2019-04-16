@@ -212,7 +212,8 @@ información redundante,  para esta practica se usa la tercera formal normal (3N
 	Por lo que la relación ya está normalizada.
 \end{enumerate}
 
-\subsection{Relacion Empleado}
+
+ 
 \subsection{Relacion Cliente}
 \subsection{Relacion Persona}
 
@@ -341,6 +342,91 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 
 
    $\therefore \,\, \mathrm{R_1, R_2, R_3} $  es la normalización en 3NF para la relación Producto. 
+   
+   
+   \subsection{Relacion Empleado}
+   Para la relación empleado se tiene:\\
+   
+   \begin{align*}
+   \overbrace{ \textbf{EMPLEADO}}^{\textbf{{E}}}&(\overbrace{ Id\_empleado}^{\textbf{\textcolor{RoyalBlue}{ie}}},\,\overbrace{Hora\, entrada}^{\textbf{\textcolor{RoyalBlue}{he}}},\,\overbrace{Hora\, salida}^{\textbf{\textcolor{RoyalBlue}{hs}}},\,\overbrace{Sueldo}^{\textbf{\textcolor{RoyalBlue}{S}}},\,\overbrace{CURP}^{\textbf{\textcolor{RoyalBlue}{C}}},\,\overbrace{Id\_tipo\, dep}^{\textbf{\textcolor{RoyalBlue}{td}}},\overbrace{Puesto}^{\textbf{\textcolor{RoyalBlue}{P}}},\,\overbrace{Fecha\_reg}^{\textbf{\textcolor{RoyalBlue}{fr}}})\\
+   &= \textbf{E}(ie,he,hs,S,C,td,P,fr)
+   \end{align*}
+   
+   Se definen las siguientes dependecias funcionales para la relación Empleado\\
+   
+   $$\mathcal{F}=\{ tdfrP \rightarrow S,\, tdP \rightarrow hehs\}$$\\
+   
+   Calculamos la cerradura para cada una de las dependencias en $\mathcal{F}$\\
+   
+   $\{\textcolor{RoyalBlue}{tdfrP}\}+= \{\textcolor{RoyalBlue}{tdfrP}Shehs\}$\\
+   
+   $\{\textcolor{RoyalBlue}{tdP}\}+= \{\textcolor{RoyalBlue}{tdP}hehs\}$\\
+   
+   Una llave para \textbf{E} es \underline{ieCtdfrP}.\\
+   
+   Buscamos violaciones a la tercera forma normal, y encontramos que las dos son violaciones.\\
+   
+   \subsubsection{Superfluos a la Izquierda}
+   
+   Para buscar elementos superfluos a la izquierda elegimos la siguiente dependencia : $tdfrP \rightarrow S$\\
+   
+   \begin{itemize}
+   	\item ¿td es superfluo? $frP \rightarrow S$\\
+   	$\textcolor{RoyalBlue}{\{frP\}}+= \textcolor{RoyalBlue}{\{frP\}} $
+   	
+   	
+   	S no aparece en la cerradura de $frP$, por lo tanto $td$ \underline{NO} es superfluo.\\
+   	
+   	\item ¿fr es superfluo? $tdP \rightarrow S$\\
+   	$\{\textcolor{RoyalBlue}{tdP}\}+= \{\textcolor{RoyalBlue}{tdP}hehs\}$\\
+   	
+   	S no aparece en la cerradura de $tdP$, por lo tanto $fr$ \underline{NO} es superfluo.\\
+   	
+   	\item ¿P es superfluo? $tdfr \rightarrow S$\\
+   	$\textcolor{RoyalBlue}{\{tdfr\}}+= \textcolor{RoyalBlue}{\{tdfr\}} $
+   	
+   	S no aparece en la cerradura de $tdfr$, por lo tanto $P$ \underline{NO} es superfluo.\\
+   	
+   	
+   	$$\mathcal{F}_{min}=\{ tdfrP \rightarrow S,\, tdP \rightarrow hehs\}$$\\
+   	
+   	\subsection{Superfluos a la Derecha}
+   	
+   	Para buscar atributos superfluos por la derecha elegimos la siguiente dependencia que tine mas de un atributo a la derecha : $tdP \rightarrow hehs$
+   	
+   	
+   	\begin{itemize}
+   		\item ¿$he$ es superfluo? $tdP \rightarrow hs$\\
+   		Se obtiene una $\mathcal{F'} = \{tdfrP \rightarrow S \,tdP \rightarrow hs\}$ y de aquí calculamos la cerradura para $tdP$\\
+   		$\textcolor{RoyalBlue}{\{tdP\}}+= \{\textcolor{RoyalBlue}{tdP}hs\}$
+   		$he$ no aparece en la cerradura de $tdP$, por lo tanto $he$ \underline{NO} es superfluo.\\
+   		
+   		\item ¿$hs$ es superfluo? $tdP \rightarrow he$\\
+   		De aquí definimos una $\mathcal{F'} = \{tdfrP \rightarrow S \,tdP \rightarrow he\}$ y calculamos la cerradura para $tdP$\\
+   		$\textcolor{RoyalBlue}{\{tdP\}}+= \{\textcolor{RoyalBlue}{tdP}he\}$
+   		$hs$ no aparece en la cerradura de $tdP$, por lo tanto $hs$ \underline{NO} es superfluo.\\
+   		
+   		
+   		
+   		 
+   		
+   		
+   	\end{itemize}
+   
+   Por lo tanto se concluye que la $\mathcal{F}_{min}$ es:
+   
+   \[\mathcal{F}_{min}=\{ tdfrP \rightarrow S,\, tdP \rightarrow hehs\}\]\\
+   
+   así que las relaciones serían\\
+   
+   $R_1(td,fr,P,S)$ con $ tdfrP \rightarrow S$  \\
+   $R_2(td,P,he,hs)$ con $ tdP \rightarrow hehs $\\
+   
+   Pero de estas dos relaciones ninguna de ellas contiene a la llave, entonces agregamos una nueva relación que la contenga $R_3(ie,C,td,fr,P)$ con  $ieCtdfrP \rightarrow ieCtdfrP$.\\
+   	
+   	$\therefore \,\, {R_1, R_2, R_3} $  es la normalización en 3NF para la relación Empleado.
+   	
+   \end{itemize}
 
    \subsection{Relacion Sucursal}
    La relación es 
@@ -356,9 +442,9 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
    Con las siguientes dependencias funcionales
    \[\mathcal{F} = \{I \rightarrow FCNCpE, Cp \rightarrow E\}\]
    Si bien existen dependencias funcionales que violan la tercera forma normal,
-   sólo es una dependencia funcional que sólo concierne a dos atrbutos, por lo
-   que so consideró que no vale la pena normalizar esta relación, puesto que el
-   trabajo neesario para hacerlo es demasiado para la disminución de redundancia
+   sólo es una dependencia funcional que sólo concierne a dos atributos, por lo
+   que se consideró que no vale la pena normalizar esta relación, puesto que el
+   trabajo necesario para hacerlo es demasiado para la disminución de redundancia
    obtenida.
 	
 \end{document}
