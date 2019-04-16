@@ -179,11 +179,11 @@ ALTER TABLE email
     FOREIGN KEY (id_cliente)
     REFERENCES cliente(id_cliente);
     
--- Creando la tabla para la relacion de Empleado (o lo que quede de ella)
+-- Creando la tabla para la relacion de Empleado
 CREATE TABLE empleado (
     id_empleado NUMBER(10),
     curp VARCHAR(18),
-    tipo_dep VARCHAR(100),  -----es una llave foranea, con quien esta relacionado?
+    tipo_dep VARCHAR(100),
     puesto VARCHAR(80),
     registro DATE
 );
@@ -197,6 +197,11 @@ ALTER TABLE empleado
     FOREIGN KEY (curp)
     REFERENCES persona(curp);
 
+ALTER TABLE empleado
+    ADD CONSTRAINT fk_tipo_dep
+    FOREIGN KEY tipo_departamento(tipo);
+
+-- Creando tabla para la relación Sueldo
 CREATE TABLE sueldo (
     id_tipo_dep VARCHAR(100),
     puesto VARCHAR(80),
@@ -207,7 +212,7 @@ CREATE TABLE sueldo (
 ALTER TABLE sueldo
     ADD CONSTRAINT fk_id_tipo_dep
     FOREIGN KEY (id_tipo_dep)
-    REFERENCES empleado(tipo_dep);
+    REFERENCES tipo_departamento(tipo);
 
 ALTER TABLE sueldo
     ADD CONSTRAINT fk_puesto
@@ -219,6 +224,7 @@ ALTER TABLE sueldo
     FOREIGN KEY (registro)
     REFERENCES empleado(registro);
 
+-- Tabla para la relación Horario
 CREATE TABLE horario (
     id_tipo_dep VARCHAR(100),
     puesto VARCHAR(80),
@@ -234,10 +240,7 @@ ALTER TABLE horario
 ALTER TABLE horario
     ADD CONSTRAINT fk_id_tipo_dep
     FOREIGN KEY (id_tipo_dep)
-    REFERENCES empleado(tipo_dep);
-
-
--------------------------------------------
+    REFERENCES tipo_departamento(tipo);
 
 -- Creando la tabla para la relación de Trabajar
 CREATE TABLE trabajar (
