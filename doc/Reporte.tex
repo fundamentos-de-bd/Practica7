@@ -496,6 +496,20 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	redundancia obtenida.
 	
 	\subsection{Esquema normalizado}
+	En este esquema realizamos un par de cambios posteriores a la normalización 
+	que surgieron cuando estabamos trabajando con el script de DDL debido a que
+	algunas llaves foráneas eran datos a los que no podíamos aplicar un CONSTRAINT
+	adecuado. Estos cambios fueron:
+	\begin{itemize}
+	    \item Horario tiene a Id\_tipo\_dep como (Fk) y como (Pk) compuesta a 
+	    (Id\_tipo\_dep, puesto).
+	    \item Sueldo tiene como (Fk) proviniente de Departamento a Id\_tipo\_dep
+	    , apunta a Horario usando (Fk) (tipo\_dep,puesto) y su (Pk) es (Id\_tipo\_dep
+	    , puesto, fecha\_registro).
+	    \item Empleado tiene como (Fk)'s los atributos (Id\_tipo\_dep,puesto,fecha\_
+	    registro).
+	\end{itemize}
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.2]{practica07Norm.jpeg}
@@ -505,18 +519,18 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	
 	\section*{Preguntas extra}
 	
-	\subsection{Oracle Database Types}
+	\subsection*{Oracle Database Types}
 	Para  responder a esto, consultamos en la página de Oracle la documentación
 	de las verisones usadas, especificamente bajo las guías de \textit{Administración}
 	en el apartado de \textit{\textbf{Database Concepts}}:
 	    \begin{itemize}
-	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/
-	        cncpt/database-concepts.pdf}{Oracle DB Enterprise Edition 18c}.
-	        \item \href{https://docs.oracle.com/cd/B28359_01/server.111/b28318/datatype
-	        .htm#CNCPT413}{Oracle DB Enterprise Edition 11g, Release 1}.
+	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/cncpt/database-concepts.pdf}
+	        {Oracle DB Enterprise Edition 18c}.
+	        \item \href{https://docs.oracle.com/cd/B28359_01/server.111/b28318/datatype.htm#CNCPT413}
+	        {Oracle DB Enterprise Edition 11g, Release 1}.
 	    \end{itemize}
 
-	\subsubsection{En la versión 18c}
+	\subsubsection*{En la versión 18c}
 	Se listan las siguientes categorías de tipos de datos:
 	\begin{itemize}
 	\small
@@ -534,7 +548,7 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	PL/SQL. \footnote{variables, 'constantes' ( Booleanos?), referencias y tipos, tanto 
 	compuestos como definidos por el usuario.}
 	
-	\subsubsection{En la versión 11g}
+	\subsubsection*{En la versión 11g}
 	Se pueden encontrar las siguientes categorías y tipos de datos:
 	\begin{itemize}
 	\small
@@ -551,34 +565,42 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	\textit{ANSI, DB2, SQL/DS, XML, URI, Object y Object Views} pero recuperando la idea 
 	de la documentación de la versión 18c, decidimos no listarlos como a los anteriores.
 	
-	\subsection{Restricciones para 'new\_name' (RENAME)}
-	
-	Consultamos  de nuevo en la página de Oracle la documentación de cada versión las 
-	guías de\textit{Administración} pero esta vez en el apartado \textit{\textbf{SQL 
-	Language Reference}}. En el caso de la versión 18c podríamos haber consultado el
-	equivalente en PL/SQL pero en este no mencionaba nada sobre 'new\_name' concreto.
+	\subsection*{Tamaño de nombres internos}
+	Para  responder a esto, consultamos en la página de Oracle la documentación
+	de las verisones usadas, especificamente bajo las guías de \textit{Database Reference}
+	fijandonos en los \textit{static data dictionary}:
 	    \begin{itemize}
-	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/
-	        sqlrf/sql-language-reference.pdf}{Oracle DB Enterprise Edition 18c}.
-	        \item \href{https://docs.oracle.com/cd/B28359_01/server.111/b28286/stateme
-	        nts_9019.htm#SQLRF01608}{Oracle DB Enterprise Edition 11g, Release 1}.
+	        \item \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/refrn/database-reference.pdf}
+	        {Oracle DB Enterprise Edition 18c \footnote{En el capítulo 3: \textit{Static Data Dictionary Views: 
+	        ALL\_PART\_COL\_STATISTICS to DATABASE\_PROPERTIES}}}.
+	        \item \href{https://docs.oracle.com/cd/B19306_01/server.102/b14237/statviews_2005.htm#i1583352}
+	        {Oracle DB Enterprise Edition 10g, Release 2}.
 	    \end{itemize}
-    Nótese que en ambas aparece el mismo texto, con cási el mismo formato (es esto un
-    copy-paste?):\\
-    \textbf{new\_name}
-    {Specify the new name to be given to the existing object. The new name must not
-    already be used by another schema object in the same namespace and must follow
-    the rules for naming schema objects.
-
-    \textbf{Restrictions on Renaming Objects}
-    Renaming objects is subject to the following restrictions:
-    \begin{itemize}
-        \item {You cannot rename a public synonym. Instead, drop the public synonym and
-        then re-create the public synonym with the new name.}
-        \item {You cannot rename a type synonym that has any dependent tables or 
-        dependent valid user-defined object types.}
-    \end{itemize}}
-    
-    Con lo cual debería quedar resuelta la pregunta.
+	En ambas secciones esta especificado que los nombres de columna son VARCHAR2, i.e. 
+	cadenas de longitud variable de a lo más cierto número de caracteres. Para la versión
+	10 (en general, lo mismo que las versiones anteriores a la 12) el límite es de 30, 
+	mientras que en la versión 18c es de 128 (en general, lo mismo que las versiones
+	posteriores a la 12).\footnote{Estos tamaños son los mismos en los limites de otras 
+	cosas de la BD como nombres de atributos, es decir, los tamaños no son específicos a 
+	columnas. Estos datos se pueden checar en los mismos documentos vinculados pero en 
+	las tablas adecuadas. Ej. \textit{ALL\_ATTRIBUTE\_DIM\_ATTR\_CLASS}}
+	
+	\subsection*{CONSTRAINT's en SQL}
+	Esta pregunta era referente a '¿Cuantos tipos de CONSTRAINT hay en SQL?', de acuerdo
+	con \href{https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/sql-language-reference.pdf}
+	{\textit{el capítulo 8}} hay 6:
+	\begin{itemize}
+	\small
+	    \item NOT NULL exige que no haya null entre los valores de la columna.
+        \item UNIQUE exige que no haya repeticiones entre los valores de la columna.
+        \item PRIMARY KEY combina las exigencias de las dos anteriores.
+        \item FOREIGN KEY pide que los valores de la columna coincidan con al menos uno
+        en una columna de otra tabla.
+        \item CHECK exige que cada valor de la columna cumpla una condición booleana
+        expresado por medio de una claúsula CHECK.
+        \item REF la versión corta egún lo que leí es que es un tipo de condición que se
+        puede usar para especificar propiedades que deben cumplir los valores relacionados
+        entre una columna y otra a la que hace un REF.
+    \end{itemize}
 	
 \end{document}
