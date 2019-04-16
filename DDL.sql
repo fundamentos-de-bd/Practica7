@@ -12,7 +12,7 @@ ALTER TABLE producto
     ADD CONSTRAINT pk_producto
     PRIMARY KEY (codigo_barras);
     
--- Creando tabla para la relac髇 de Medicamento
+-- Creando tabla para la relac贸n de Medicamento
 CREATE TABLE medicamento (
     id_prod NUMBER(10),
     nombre VARCHAR(100),
@@ -30,7 +30,7 @@ ALTER TABLE medicamento
     FOREIGN KEY (id_prod)
     REFERENCES producto(codigo_barras);
     
--- Creando tabla para la relaci髇 Compuestos
+-- Creando tabla para la relaci贸n Compuestos
 CREATE TABLE compuestos (
     sustancia VARCHAR(100),
     nombre VARCHAR(100),
@@ -42,7 +42,7 @@ ALTER TABLE compuestos
     FOREIGN KEY (nombre, laboratorio)
     REFERENCES medicamento(nombre, laboratorio);
     
--- Creando la tabla para la relaci髇 de Lote
+-- Creando la tabla para la relaci贸n de Lote
 CREATE TABLE lote (
     codigo_barras NUMBER(20),
     id_produccion NUMBER(10),
@@ -58,7 +58,7 @@ ALTER TABLE lote
     ADD CONSTRAINT pk_lote
     PRIMARY KEY (id_produccion);
     
--- Creando tabla para la relaci髇 de Tipo Departamento
+-- Creando tabla para la relaci贸n de Tipo Departamento
 CREATE TABLE tipo_departamento (
     tipo VARCHAR(100),
     descripcion VARCHAR(500)
@@ -68,7 +68,7 @@ ALTER TABLE tipo_departamento
     ADD CONSTRAINT pk_tipo_dep
     PRIMARY KEY (tipo);
     
--- Creando la tabla para la relaci髇 de Sucursal
+-- Creando la tabla para la relaci贸n de Sucursal
 CREATE TABLE sucursal (
     id_sucursal NUMBER(10),
     fecha_func DATE,
@@ -82,7 +82,7 @@ ALTER TABLE sucursal
     ADD CONSTRAINT pk_sucursal
     PRIMARY KEY (id_sucursal);
     
--- Creando tabla para tel閒ono de sucursales
+-- Creando tabla para tel茅fono de sucursales
 CREATE TABLE telefono_sucursal (
     num_tel NUMBER(10),
     id_sucursal NUMBER(10)
@@ -93,7 +93,7 @@ ALTER TABLE telefono_sucursal
     FOREIGN KEY (id_sucursal)
     REFERENCES sucursal(id_sucursal);
     
--- Creando tabla para la relaci髇 de Tener Departamento
+-- Creando tabla para la relaci贸n de Tener Departamento
 CREATE TABLE tener_departamento (
     id_suc NUMBER(10),
     id_tipo VARCHAR(100)
@@ -109,10 +109,20 @@ ALTER TABLE tener_departamento
     FOREIGN KEY (id_tipo)
     REFERENCES tipo_departamento(tipo);
     
--- Creando la tabla para la relacion de Persona (o lo que quede de ella)
--- (Pendiente)
+-- Creando la tabla para la relacion de Persona
+CREATE TABLE persona (
+    curp VARCHAR(18),
+    nombre VARCHAR(100),
+    apellido_p VARCHAR(100),
+    apellido_m VARCHAR(100),
+    fecha_nac DATE
+);
 
--- Creando tabla para tel閒ono de personas
+ALTER TABLE persona
+    ADD CONSTRAINT pk_persona
+    PRIMARY KEY (curp);
+
+-- Creando tabla para tel茅fono de personas
 CREATE TABLE telefono_persona (
     num_tel NUMBER(10),
     curp VARCHAR(12)
@@ -123,8 +133,24 @@ ALTER TABLE telefono_persona
     FOREIGN KEY (curp)
     REFERENCES cliente(curp);
     
--- Creando table para la relacion Cliente (o lo que quede de ella)
--- (Pendiente)
+-- Creando table para la relacion Cliente
+CREATE TABLE cliente (
+    id_cliente NUMBER(10),
+    calle VARCHAR(100),
+    numero_ext VARCHAR(10),
+    numero_int VARCHAR(10),
+    cp NUMBER(5),
+    curp VARCHAR(18)
+);
+
+ALTER TABLE cliente
+    ADD CONSTRAINT pk_cliente
+    PRIMARY KEY (id_cliente);
+    
+ALTER TABLE cliente
+    ADD CONSTRAINT fk_persona
+    FOREIGN KEY (curp)
+    REFERENCES persona(curp);
 
 -- Creando tabla para Tarjeta
 CREATE TABLE tarjeta (
@@ -156,7 +182,7 @@ ALTER TABLE email
 -- Creando la tabla para la relacion de Empleado (o lo que quede de ella)
 -- (Pendiente)
 
--- Creando la tabla para la relaci髇 de Trabajar
+-- Creando la tabla para la relaci贸n de Trabajar
 CREATE TABLE trabajar (
     id_suc NUMBER(10),
     id_empleado NUMBER(10)
@@ -172,7 +198,7 @@ ALTER TABLE trabajar
     FOREIGN KEY (id_empleado)
     REFERENCES empleado(id_empleado);
     
--- Creando la tabla para la relaci髇 de Dirigir sucursal
+-- Creando la tabla para la relaci贸n de Dirigir sucursal
 CREATE TABLE dirigir (
     id_suc NUMBER(10),
     id_empleado NUMBER(10)
@@ -188,7 +214,7 @@ ALTER TABLE dirigir
     FOREIGN KEY (id_empleado)
     REFERENCES empleado(id_empleado);
     
--- Creando la tabla para la relaci髇 de Supervisar
+-- Creando la tabla para la relaci贸n de Supervisar
 CREATE TABLE supervisar (
     id_empleado NUMBER(10),
     id_suc NUMBER(10),
@@ -227,7 +253,7 @@ ALTER TABLE venta
     FOREIGN KEY (num_tarjeta)
     REFERENCES tarjeta(num_tarjeta);
 
--- Creando la tabla para la relaci髇 de Tipo de Pago
+-- Creando la tabla para la relaci贸n de Tipo de Pago
 CREATE TABLE tipo_pago (
     num_transac NUMBER(10),
     id_venta NUMBER(10)
@@ -242,7 +268,7 @@ ALTER TABLE tipo_pago
     ADD CONSTRAINT pk_tipo_pago
     PRIMARY KEY (num_transac);
     
--- Creando la tabla para la relaci髇 de M閠odo de Pago
+-- Creando la tabla para la relaci贸n de M茅todo de Pago
 CREATE TABLE metodo_pago (
     importe NUMBER(10),
     medio NUMBER(10),
@@ -275,7 +301,7 @@ ALTER TABLE ticket
     FOREIGN  KEY (id_venta)
     REFERENCES venta(id_venta);
 
--- Creando tabla para la relaci髇 de canjear ticket
+-- Creando tabla para la relaci贸n de canjear ticket
 CREATE TABLE canjear_ticket (
     fecha DATE,
     id_ticket NUMBER(10),
@@ -292,7 +318,7 @@ ALTER TABLE canjear_ticket
     FOREIGN KEY (id_cliente)
     REFERENCES cliente(id_cliente);
         
--- Creando tabla para la relaci髇 de Instancia Producto
+-- Creando tabla para la relaci贸n de Instancia Producto
 CREATE TABLE instancia_producto (
     id_producto NUMBER(10),
     codigo_barras NUMBER(20),
