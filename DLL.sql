@@ -1,0 +1,327 @@
+-- Creando la tabla para la relacion de Producto
+CREATE TABLE producto (
+    codigo_barras NUMBER(20),
+    precio NUMBER(10),
+    presentacion VARCHAR(100),
+    cantidad NUMBER(10),
+    es_refrigerado NUMBER(1),
+    marca VARCHAR(100)
+);
+
+ALTER TABLE producto 
+    ADD CONSTRAINT pk_producto
+    PRIMARY KEY (codigo_barras);
+    
+-- Creando tabla para la relacón de Medicamento
+CREATE TABLE medicamento (
+    id_prod NUMBER(10),
+    nombre VARCHAR(100),
+    laboratorio VARCHAR(100),
+    dosis NUMBER(10),
+    esControlado NUMBER(1)
+);
+    
+ALTER TABLE medicamento
+    ADD CONSTRAINT pk_medicamento
+    PRIMARY KEY (nombre, laboratorio);
+    
+ALTER TABLE medicamento
+    ADD CONSTRAINT fk_producto
+    FOREIGN KEY (id_prod)
+    REFERENCES producto(codigo_barras);
+    
+-- Creando tabla para la relación Compuestos
+CREATE TABLE compuestos (
+    sustancia VARCHAR(100),
+    nombre VARCHAR(100),
+    laboratorio VARCHAR(100)
+);
+
+ALTER TABLE compuestos 
+    ADD CONSTRAINT fk_medicamento
+    FOREIGN KEY (nombre, laboratorio)
+    REFERENCES medicamento(nombre, laboratorio);
+    
+-- Creando la tabla para la relación de Lote
+CREATE TABLE lote (
+    codigo_barras NUMBER(20),
+    id_produccion NUMBER(10),
+    fecha_cad DATE
+);
+
+ALTER TABLE lote
+    ADD CONSTRAINT fk_cod_barr
+    FOREIGN KEY (codigo_barras)
+    REFERENCES producto(codigo_barras);
+    
+ALTER TABLE lote
+    ADD CONSTRAINT pk_lote
+    PRIMARY KEY (id_produccion);
+    
+-- Creando tabla para la relación de Tipo Departamento
+CREATE TABLE tipo_departamento (
+    tipo VARCHAR(100),
+    descripcion VARCHAR(500)
+);
+
+ALTER TABLE tipo_departamento
+    ADD CONSTRAINT pk_tipo_dep
+    PRIMARY KEY (tipo);
+    
+-- Creando la tabla para la relación de Sucursal
+CREATE TABLE sucursal (
+    id_sucursal NUMBER(10),
+    fecha_func DATE,
+    calle VARCHAR(100),
+    numero NUMBER(10),
+    cp NUMBER(5),
+    estado VARCHAR(15)
+);
+
+ALTER TABLE sucursal  
+    ADD CONSTRAINT pk_sucursal
+    PRIMARY KEY (id_sucursal);
+    
+-- Creando tabla para teléfono de sucursales
+CREATE TABLE telefono_sucursal (
+    num_tel NUMBER(10),
+    id_sucursal NUMBER(10)
+);
+
+ALTER TABLE telefono_sucursal
+    ADD CONSTRAINT pk_sucursal
+    FOREIGN KEY (id_sucursal)
+    REFERENCES sucursal(id_sucursal);
+    
+-- Creando tabla para la relación de Tener Departamento
+CREATE TABLE tener_departamento (
+    id_suc NUMBER(10),
+    id_tipo VARCHAR(100)
+);
+
+ALTER TABLE tener_departamento
+    ADD CONSTRAINT fk_suc
+    FOREIGN KEY (id_suc)
+    REFERENCES sucursal(id_sucursal);
+    
+ALTER TABLE tener_departamento
+    ADD CONSTRAINT fk_tipo_dep
+    FOREIGN KEY (id_tipo)
+    REFERENCES tipo_departamento(tipo);
+    
+-- Creando la tabla para la relacion de Persona (o lo que quede de ella)
+-- (Pendiente)
+
+-- Creando tabla para teléfono de personas
+CREATE TABLE telefono_persona (
+    num_tel NUMBER(10),
+    curp VARCHAR(12)
+);
+
+ALTER TABLE telefono_persona 
+    ADD CONSTRAINT pk_persona
+    FOREIGN KEY (curp)
+    REFERENCES cliente(curp);
+    
+-- Creando table para la relacion Cliente (o lo que quede de ella)
+-- (Pendiente)
+
+-- Creando tabla para Tarjeta
+CREATE TABLE tarjeta (
+    num_tarjeta NUMBER(10),
+    id_cliente NUMBER(10)
+);
+
+ALTER TABLE tarjeta 
+    ADD CONSTRAINT pk_tarjeta
+    PRIMARY KEY (num_tarjeta);
+    
+ALTER TABLE tarjeta
+    ADD CONSTRAINT fk_cliente
+    FOREIGN KEY (id_cliente)
+    REFERENCES cliente(id_cliente);
+    
+    
+-- Creando tabla para E-mail de los clientes
+CREATE TABLE email (
+    id_cliente NUMBER(10),
+    email VARCHAR(20)
+);
+
+ALTER TABLE email
+    ADD CONSTRAINT fk_cliente
+    FOREIGN KEY (id_cliente)
+    REFERENCES cliente(id_cliente);
+    
+-- Creando la tabla para la relacion de Empleado (o lo que quede de ella)
+-- (Pendiente)
+
+-- Creando la tabla para la relación de Trabajar
+CREATE TABLE trabajar (
+    id_suc NUMBER(10),
+    id_empleado NUMBER(10)
+);
+
+ALTER TABLE trabajar
+    ADD CONSTRAINT fk_suc
+    FOREIGN KEY (id_suc)
+    REFERENCES sucursal(id_sucursal);
+    
+ALTER TABLE trabajar
+    ADD CONSTRAINT fk_empleado
+    FOREIGN KEY (id_empleado)
+    REFERENCES empleado(id_empleado);
+    
+-- Creando la tabla para la relación de Dirigir sucursal
+CREATE TABLE dirigir (
+    id_suc NUMBER(10),
+    id_empleado NUMBER(10)
+);
+
+ALTER TABLE dirigir
+    ADD CONSTRAINT fk_suc
+    FOREIGN KEY (id_suc)
+    REFERENCES sucursal(id_sucursal);
+    
+ALTER TABLE dirigir
+    ADD CONSTRAINT fk_empleado
+    FOREIGN KEY (id_empleado)
+    REFERENCES empleado(id_empleado);
+    
+-- Creando la tabla para la relación de Supervisar
+CREATE TABLE supervisar (
+    id_empleado NUMBER(10),
+    id_suc NUMBER(10),
+    id_tipo_dep VARCHAR(100)
+);
+
+ALTER TABLE supervisar 
+    ADD CONSTRAINT fk_empleado
+    FOREIGN KEY (id_empleado)
+    REFERENCES empleado (id_empleado);
+    
+ALTER TABLE supervisar
+    ADD CONSTRAINT fk_dep
+    FOREIGN KEY (id_suc, id_tipo_dep)
+    REFERENCES tener_departamento(id_suc, id_tipo);
+    
+-- Creando tabla para Venta
+CREATE TABLE venta (
+    id_venta NUMBER(10),
+    fecha DATE,
+    num_tarj NUMBER(10),
+    id_empleado NUMBER(10)
+);
+
+ALTER TABLE venta
+    ADD CONSTRAINT pk_venta
+    PRIMARY KEY (id_venta);
+    
+ALTER TABLE venta
+    ADD CONSTRAINT fk_empleado
+    FOREIGN KEY (id_empleado)
+    REFERENCES empleado(id_empleado);
+    
+ALTER TABLE venta
+    ADD CONSTRAINT fk_tarj
+    FOREIGN KEY (num_tarjeta)
+    REFERENCES tarjeta(num_tarjeta);
+
+-- Creando la tabla para la relación de Tipo de Pago
+CREATE TABLE tipo_pago (
+    num_transac NUMBER(10),
+    id_venta NUMBER(10)
+);
+
+ALTER TABLE tipo_pago
+    ADD CONSTRAINT fk_venta
+    FOREIGN KEY (id_venta)
+    REFERENCES venta(id_venta);
+
+ALTER TABLE tipo_pago
+    ADD CONSTRAINT pk_tipo_pago
+    PRIMARY KEY (num_transac);
+    
+-- Creando la tabla para la relación de Método de Pago
+CREATE TABLE metodo_pago (
+    importe NUMBER(10),
+    medio NUMBER(10),
+    num_transac NUMBER(10),
+    num_tarjeta NUMBER(10)
+);
+
+ALTER TABLE metodo_pago
+    ADD CONSTRAINT fk_trans
+    FOREIGN KEY (num_transac)
+    REFERENCES tipo_pago(num_transac);
+    
+ALTER TABLE metodo_pago
+    ADD CONSTRAINT fk_tarj
+    FOREIGN KEY (num_tarjeta)
+    REFERENCES tarjeta(num_tarjeta);
+    
+-- Creando la tabla para Ticket
+CREATE TABLE ticket (
+    id_ticket NUMBER(10),
+    id_venta NUMBER(10)
+);
+
+ALTER TABLE ticket
+    ADD CONSTRAINT pk_ticket
+    PRIMARY KEY (id_ticket);
+    
+ALTER TABLE ticket
+    ADD CONSTRAINT fk_venta
+    FOREIGN  KEY (id_venta)
+    REFERENCES venta(id_venta);
+
+-- Creando tabla para la relación de canjear ticket
+CREATE TABLE canjear_ticket (
+    fecha DATE,
+    id_ticket NUMBER(10),
+    id_ticket NUMBER(10)
+)
+
+ALTER TABLE canjear_ticket
+    ADD CONSTRAINT fk_ticket
+    FOREIGN KEY (id_ticket)
+    REFERENCES ticket(id_ticket);
+    
+ALTER TABLE canjear_ticket
+    ADD CONSTRAINT fk_cliente
+    FOREIGN KEY (id_cliente)
+    REFERENCES cliente(id_cliente);
+        
+-- Creando tabla para la relación de Instancia Producto
+CREATE TABLE instancia_producto (
+    id_producto NUMBER(10),
+    codigo_barras NUMBER(20),
+    id_produccion NUMBER(10),
+    id_departamento VARCHAR(100),
+    id_venta NUMBER(10),
+    descripcion VARCHAR(100)
+);
+
+ALTER TABLE instancia_producto
+    ADD CONSTRAINT pk_inst_prod
+    PRIMARY KEY (id_producto);
+    
+ALTER TABLE instancia_producto
+    ADD CONSTRAINT fk_cod_barr
+    FOREIGN KEY (codigo_barras)
+    REFERENCES producto(codigo_barras);
+    
+ALTER TABLE instancia_producto
+    ADD CONSTRAINT fk_id_produc
+    FOREIGN KEY (id_produccion)
+    REFERENCES lote(id_produccion);
+    
+ALTER TABLE instancia_produto
+    ADD CONSTRAINT fk_id_dep
+    FOREIGN KEY (id_departamento)
+    REFERENCES tipo_departamento(tipo);
+    
+ALTER TABLE instancia_producto
+    ADD CONSTRAINT fk_venta
+    FOREIGN KEY (id_venta)
+    REFERENCES venta(id_venta);
