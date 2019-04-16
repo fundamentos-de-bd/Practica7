@@ -341,5 +341,22 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
    $\therefore \,\, \mathrm{R_1, R_2, R_3} $  es la normalización en 3NF para la relación Producto. 
 
    \subsection{Relacion Sucursal}
+   La relación es 
+   \[\overbrace{{\textbf{Sucursal}}}^{\textbf{S}} 
+   (
+	   \overbrace{Id\_Suc}^{I}, \overbrace{Fecha\_Fund}^{F},
+	   \overbrace{Calle}^{C}, \overbrace{Numero}^{N}, Cp,
+	   \overbrace{Estado}^{E}
+	)
+	= 
+	\textbf{S}(I, F, C, N, Cp, E)
+	\]
+   Con las siguientes dependencias funcionales
+   \[\mathcal{F} = \{I \rightarrow FCNCpE, Cp \rightarrow E\}\]
+   Si bien existen dependencias funcionales que violan la tercera forma normal,
+   sólo es una dependencia funcional que sólo concierne a dos atrbutos, por lo
+   que so consideró que no vale la pena normalizar esta relación, puesto que el
+   trabajo neesario para hacerlo es demasiado para la disminución de redundancia
+   obtenida.
 	
 \end{document}
