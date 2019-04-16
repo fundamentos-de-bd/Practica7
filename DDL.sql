@@ -180,7 +180,64 @@ ALTER TABLE email
     REFERENCES cliente(id_cliente);
     
 -- Creando la tabla para la relacion de Empleado (o lo que quede de ella)
--- (Pendiente)
+CREATE TABLE empleado (
+    id_empleado NUMBER(10),
+    curp VARCHAR(18),
+    tipo_dep VARCHAR(100),  -----es una llave foranea, con quien esta relacionado?
+    puesto VARCHAR(80),
+    registro DATE
+);
+
+ALTER TABLE empleado
+    ADD CONSTRAINT pk_empleado
+    PRIMARY KEY (id_empleado)
+
+ALTER TABLE empleado
+    ADD CONSTRAINT fk_curp
+    FOREIGN KEY (curp)
+    REFERENCES persona(curp);
+
+CREATE TABLE sueldo (
+    id_tipo_dep VARCHAR(100),
+    puesto VARCHAR(80),
+    registro DATE,
+    sueldo NUMBER(10)
+);
+
+ALTER TABLE sueldo
+    ADD CONSTRAINT fk_id_tipo_dep
+    FOREIGN KEY (id_tipo_dep)
+    REFERENCES empleado(tipo_dep);
+
+ALTER TABLE sueldo
+    ADD CONSTRAINT fk_puesto
+    FOREIGN KEY (puesto)
+    REFERENCES empleado(puesto);
+
+ALTER TABLE sueldo
+    ADD CONSTRAINT fk_reg
+    FOREIGN KEY (registro)
+    REFERENCES empleado(registro);
+
+CREATE TABLE horario (
+    id_tipo_dep VARCHAR(100),
+    puesto VARCHAR(80),
+    hora_entrada NUMBER(10),
+    hora_salida NUMBER(10)
+);
+
+ALTER TABLE horario
+    ADD CONSTRAINT fk_puesto
+    FOREIGN KEY (puesto)
+    REFERENCES empleado(puesto);
+
+ALTER TABLE horario
+    ADD CONSTRAINT fk_id_tipo_dep
+    FOREIGN KEY (id_tipo_dep)
+    REFERENCES empleado(tipo_dep);
+
+
+-------------------------------------------
 
 -- Creando la tabla para la relación de Trabajar
 CREATE TABLE trabajar (
