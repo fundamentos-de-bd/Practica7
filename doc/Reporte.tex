@@ -78,143 +78,193 @@ información redundante,  para esta practica se usa la tercera formal normal (3N
 	\label{fg:esNN}
 \end{figure}
 
-\section{Definiendo dependencias funcionales para el caso de uso}
+\section{Normalizando relaciones}
 
-\subsection{Tablas con dependencias únicamente triviales}
+\subsection{Tablas claramente ya normalizadas}
+Todas las relaciones con únicamente dos atributos ya está normalizadas, pues las
+únicas dependencias funcionales que puede haber son las triviales o las inducidas
+por llaves (un atributo determina al otro), y ninguna de estas es violación a la
+tercara forma normal. En el equema, estas son
+\begin{itemize}
+	\item Tipo de pago
+	\item Tarjeta
+	\item Ticket
+	\item Teléfono sucursal
+	\item Teléfono persona
+	\item Email
+	\item Trabajar
+	\item Dirigir
+	\item Tener departamento
+	\item Tipo departamento
+\end{itemize}
+
+\subsection{Tablas no tan claramente ya normalizadas}
 \begin{enumerate}
 	\item Método\\
 	Tanto el importe como el medio sólo son valores para representar la cantidad
 	de dinero, que no son únicos entre transacciones.\\
 	Una transacción puede tener varios métodos de pago, así que tampoco
-	puede determinar nada.\\
+	puede determinar nada extra.\\
 	Y una tarjeta puede tener varias instancias de método de pago, por lo que
-	tampoco puede identificar a nada. Además de que este campo puede ser nulo.\\
-	Entonces las únicas dependencias funcionales de la relación son las
-	triviales.\\
-	Por lo que la relación ya está normalizada.
-	\item Tipo de pago \\
-	Una venta puede tener varias transacciones, por lo que el identificador de
-	la venta no determina nada. El número de transacción, que es la llave, 
-	determina a los demás.\\
-	Entonces, las únicas dependencias funcionales son las triviales o la
-	generada por la llave.\\
-	Entonces la relación ya está normalizada.
-	\item Tarjeta \\
-	Un cliente puede tener varias tarjetas, así que el identificador de cliente 
-	no puede determinar nada. \\
-	El número de tarjeta, que es la llave, determina todo. \\
-	Entonces las únicas dependencias funcionales que hay son las triviales o la
-	inducida por la llave.\\
-	Por lo que la relación ya está normalizada.
+	tampoco puede identificar a nada extra. \\
+	Entonces las únicas dependencias funcionales que hay son triviales, por lo
+	que la relación ya está normalizada.
 	\item Canjear Ticket \\
-	La fecha no puede determinar nada. \\ 
-	Un clienten canjea varios tickets, así que tampoco el cliente determina
-	nada. Y se pueden canjear el mismo día, así que la fecha con el cliente
-	tampoco determina nada extra.\\
+	Pueden haber muchos canjeos el mismo día, así que la fecha no determina nada
+	extra. \\ 
+	Un cliente canjea varios tickets, así que tampoco el cliente determina
+	nada extra. Y se pueden canjear varios tickets el mismo día, así que la 
+	fecha con el cliente tampoco determina nada extra.\\
 	El identificador del ticket es único, pues un ticket solo se canjea una vez.
 	Entonces el identificador del ticket determina a todo lo demás, por lo que
 	es llave.\\
-	Entonces las únicas dependencias funcionales que hay son las triviales o una
-	inducida por una llave candidata.\\
+	Entonces, si la relación es 
+   \[\overbrace{{\textbf{CanjearTicket}}}^{\textbf{Ct}} 
+   (
+	   \overbrace{Fecha}^{F}, \overbrace{Id\_Ticket}^{T},
+	   \overbrace{Id\_Cliente}^{C}
+	)
+	= 
+	\textbf{Ct}(F, T, C)
+	\]
+	Las dependencias funcionales no triviales son 
+	\[\mathcal{F} = \{T \rightarrow CF\}\]
+	Que no violan la tercera forma normal (todas tiene una llave a la izquierda)
+	.\\
 	Por lo que la relación ya está normalizada.
-	\item Ticket \\
-	Una venta puede tener varios tickets (cuentas separadas) así que el
-	identificador de la venta no determina nada.\\
-	El identificador del ticket es la llave, y determina lo demás.\\
-	Entonces las únicas dependecias funcionales son las triviales o las
-	inducidas por la llave.\\
-	Entonces la relación ya está normalizada.
-	\item {Venta}
+	\item Venta \\
 	Puede haber varias ventas por día, así que la fecha no determina nada extra.\\
 	Una tarjeta puede usarse para varias ventas, así que el número de tarjeta no
 	determna nada extra. Esas ventas pueden ser el mismo día, por lo que la fecha
 	junto con el número de tarjeta no determina nada extra.\\
 	Un empleado puede atender varias ventas así que el identificador de cliente
 	no determina nada extra. También puede atender varias ventas el mismo día, y
-	ventas diferentes que usaron la misma tarjeta así que el empledao junto con
+	ventas diferentes que usaron la misma tarjeta así que el empleQdo junto con
 	la fecha o la tarjeta no determinan nada extra.\\
 	El identificador de venta es la llave, así que determina todo.\\
-	Entonce en la relación sólo hay dependecias funcionales triviales o la
-	inducida por la llave.\\
-	Entonecs la relación ya está normalizada.
+	Entonces, si la relación es 
+	\[\overbrace{{\textbf{Venta}}}^{\textbf{V}} 
+   (
+	   \overbrace{Id\_Venta}^{I}, \overbrace{Fecha}^{F}, 
+	   \overbrace{Num\_Tarjeta}^{T}, \overbrace{Id\_Empleado}^{E}
+	)
+	= 
+	\textbf{V}(I, F, T, E)
+	\]
+	Las dependencias funcionales no triviales son 
+	\[\mathcal{F} = \{I \rightarrow FTE\}\]
+	Y como todas tienen una llave a la izquierda, no son violación de la tercera
+	forma normal.\\
+	Entonces la relación ya está normalizada.
 	\item Medicamento \\
-	El laboratorio puede tener varios medicamentos, así queno determina nada
-	extra. \\
+	El laboratorio puede tener varios medicamentos, así que no puede determinar
+	nada extra. \\
 	La dosis tampoco puede determinar nada extra, pues puede repetirse, al igual
 	que la dosis con el laboratorio.\\
 	Igualmente, la bandera sobre si es controlado no determina nada extra, así
-	como tampoco esa bandera junto con el nombre del laboratorio o la dosis.\\
-	El identificador del producto y el nombre del medicamento son la llave de la
-	relación, por lo que determinan todo.\\
-	Entonces en la relación las únicas dependencias funcionales son las
-	triviales o las inducidas por la llave.\\
-	Por lo que la relación ya está normalizada.
+	como tampoco esa bandera junto con el nombre del laboratorio o la dosis, o
+	las tres juntas.\\
+	El identificador del producto es único por lo que determinan todo y es llave
+	, al igual que el nombre del medicamento.\\
+	Entonces, si la relación es 
+	\[\overbrace{{\textbf{Medicamento}}}^{\textbf{M}} 
+   (
+	   \overbrace{Id\_Prod}^{I}, \overbrace{Nombre}^{N}, 
+	   \overbrace{Laboratorio}^{L}, \overbrace{Dosis}^{D},
+	   \overbrace{Es\_Controlado}^{C}
+	)
+	= 
+	\textbf{M}(I, N, L, D, C)
+	\]
+	Las dependencias funcionales no triviales son 
+	\[\mathcal{F} = \{I \rightarrow NLDC, N \rightarrow ILDC\}\]
+	Y como todas tienen una llave a la izquierda, no son violación de la tercera
+	forma normal.\\
+	Entonces la relación ya está normalizada.
 	\item Compuestos \\
-	El nombre del compuesto es el determinante, que se debe juntar con las
-	llaves foráneas.\\
-	Entonces  todos los atributos son la llave.\\
-	Por lo que sólo hay dependencias funcionales triviales y la relación ya está
+	El nombre y el laboratoio son parte de una llave foránea de medicamento. Un
+	medicamento puede tener varios compuesto, así que no determina nada extra.\\
+	La sustancia puede estar en varios medicamentos, así que tampoco es única,
+	por lo que no puede determinar nada extra.\\
+	Entonces sólo hay dependencias funcionales triviales y la relación ya está
 	normalizada.
-	\item Teléfono Sucursal
-	El número es un determinante, por lo que es una llave.\\
-	Una sucursal puede tener varios teléfonos, así que la sucursal no determina
-	nada extra.\\
-	Entonces todas las dependencias funcionales son triviales o la inducida por
-	la llave.\\
-	Por lo que la relación ya está normalizada.
-	\item Teléfono Persona
-	El número es un determinante, por lo que es una llave.\\
-	Un cliente puede tener varios teléfonos, así que el identificador de cliente
-	no determina nada extra.\\
-	Entonces todas las dependencias funcionales son triviales o la inducida por
-	la llave.\\
-	Por lo que la relación ya está normalizada.
-	\item Email
-	El correo es un determinante, pues dos clientes no puede tener el mismo
-	correo, por lo que es una llave.\\
-	Un cliente puede tener varios correo, así que la sucursal no determina
-	nada extra.\\
-	Entonces todas las dependencias funcionales son triviales o la inducida por
-	la llave.\\
-	Por lo que la relación ya está normalizada.
-	\item Trabajar
-	Un empleado puede trabajar en varias sucursales y una sucursal puede tener
-	varios trabajadores. \\
-	Entonces todas las dependencias funcionales son triviales, por lo que la
-	relación ya está normalizada.
-	\item Dirigir \\
-	Un empleado puede dirigir varias sucursales, por lo que no determina nada
-	extra.\\
-	Una sucursal sólo tiene un gerente, así que es única. Entonces puede ser
-	llave.\\
-	Entonces todas las dependencias funcionales son triviales o son las
-	inducidas por la llave.\\
-	Por lo que la relación ya está normalizada.
-	\item Supervisar
+	\item Supervisar \\
 	Un empleado puede supervisar varios departamentos, por lo que no determina nada
 	extra.\\
-	Un departamento sólo tiene un supervisor, así que es único. Entonces puede ser
-	llave.\\
-	Entonces todas las dependencias funcionales son triviales o son las
-	inducidas por la llave.\\
-	Por lo que la relación ya está normalizada.
-	\item Tener departamento
-	Una sucursal tiene varios departamentos, así que no puede determinar nada
+	Un mismo tipo de departamento puede estar en varias sucursales, y un mismo
+	empleado puede supervisar el mismo departamento en sucursales ddistintas,
+	por lo que el departamento no determina nada, así como tampoco lo hacen el 
+	departamento y el empleado.\\
+	La sucursal puede tener varios departamentos, así que no puede determinar
+	nada extra. Y en una misma sucursal un empleado puede supervisar varios
+	departamentos, por lo que la sucursal y el empleado tampoco determinan nada
 	extra.\\
-	Un tipo de departamentos puede estar en varias sucursales, así que tampoco
+	Cada departamento en una sucursal dada tiene sólo un supervisor, por lo que 
+	el tipo de departamento con la sucursal determinan el empleado supervisor.
+	Y como esta dependencia incluye a todos los atributos de la relación, es
+	llave.\\
+	Entonces, si la relación es 
+	\[\overbrace{{\textbf{Supervisar}}}^{\textbf{S}} 
+	(
+		\overbrace{Id\_Empleado}^{E}, \overbrace{Id\_Departamento}^{D},
+		\overbrace{Id\_Sucursal}^{Su}
+	 )
+	 = 
+	 \textbf{S}(E, D, Su)
+	 \]
+	 Las dependencias funcionales no triviales son 
+	 \[\mathcal{F} = \{DSu \rightarrow E\}\]
+	 Y como la parte izquierda es una llave, no se viola la tercera forma normal.\\
+	 Por lo que la relación ya está normalizada.
+	\item Persona \\
+	Tanto el Nombre como los dos Apellidos sólo son la representación atómica del
+	atributo de Nombre Completo, que puede no ser único, así que no determina
+	nada extra.\\
+	De igual manera, varias personas nacen el mismo día, así que esta tampoco
 	determina nada extra.\\
-	Entonces todas las dependencias funcionales son triviales.\\
+	Y sería demasiada coincidencia, pero es posible que personas con el mismo
+	nombre nascan el mismo día, así que el nombre completo con la fecha de 
+	nacimiento no determina nada extra.\\
+	La CURP es la llave, por lo que determina todo lo demás.\\
+	Entonces, si la relación es 
+	\[\overbrace{{\textbf{Persona}}}^{\textbf{P}} 
+   (
+	   \overbrace{CURP}^{C}, \overbrace{Nombre}^{N}, 
+	   \overbrace{Apellido P}^{Pa}, \overbrace{Apellido M}^{M},
+	   \overbrace{Fecha\_Nac}^{F}
+	)
+	= 
+	\textbf{P}(C, N, Pa, M, F)
+	\]
+	Las dependencias funcionales no triviales son 
+	\[\mathcal{F} = \{C \rightarrow NPaMF\}\]
+	Y como la parte izquierda es llave,  no hay violaciones a la tercera forma
+	normal.\\
 	Entonces la relación ya está normalizada.
-	\item Tipo Departamento
-	La descripción podríano ser única, por lo que eno determina nada extra.\\
-	El identificador también es llave y determina a lo demás.\\
-	Entonces las dependencias funcionales son las generadas por llaves. \\
-	Por lo que la relación ya está normalizada.
+	\item Cliente \\
+	Tanto la calle, como los números y el CP son representación atómica del
+	atributo de dirección. Y como puede haber varios clientes en una misma
+	dirección, esta no determina nada extra.\\
+	Tanto la CURP como el identificador de cliente son únicos, así que son
+	llave.\\
+	Entonces, si la relación es 
+	\[\overbrace{{\textbf{Cliente}}}^{\textbf{C}} 
+   (
+	   \overbrace{Id\_Cliente}^{I}, \overbrace{Calle}^{Ca}, 
+	   \overbrace{Numero Externo}^{Ne}, \overbrace{Numero Interno}^{Ni},
+	   \overbrace{CP}^{Cp}, \overbrace{CURP}^{Cu}
+	)
+	= 
+	\textbf{C}(I, Ca, Ne, Ni, Cp, Cu)
+	\]
+	Las dependencias funcionales no triviales son 
+	\[\mathcal{F} = \{I \rightarrow CaNeNiCpCu, Cu \rightarrow ICaNeNiCp\}\]
+	Y como la parte izquierda de ambas es llave, no hay violaciones a la tercera
+	forma normal.\\
+	Entonces la relación ya está normalizada.
 \end{enumerate}
 
 \subsection{Relacion Empleado}
-\subsection{Relacion Cliente}
-\subsection{Relacion Persona}
 
 \subsection{Relacion Producto}
 
@@ -340,12 +390,12 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	$\mathrm{R_3(A,B,C,J,K,L)}\,\,\, con \,\,\, \mathrm{ ABCJKL \rightarrow ABCJKL}$\\
 
 
-   $\therefore \,\, \mathrm{R_1, R_2, R_3} $  es la normalización en 3NF para la relación Producto. 
+    $\therefore \,\, \mathrm{R_1, R_2, R_3} $  es la normalización en 3NF para la relación Producto. 
 
-   \subsection{Relacion Sucursal}
-   La relación es 
-   \[\overbrace{{\textbf{Sucursal}}}^{\textbf{S}} 
-   (
+    \subsection{Relacion Sucursal}
+    La relación es 
+    \[\overbrace{{\textbf{Sucursal}}}^{\textbf{S}} 
+    (
 	   \overbrace{Id\_Suc}^{I}, \overbrace{Fecha\_Fund}^{F},
 	   \overbrace{Calle}^{C}, \overbrace{Numero}^{N}, Cp,
 	   \overbrace{Estado}^{E}
@@ -353,12 +403,12 @@ Tenemos a $\mathrm{B \rightarrow FGHIE}$ y buscamos elementos superfluos a la de
 	= 
 	\textbf{S}(I, F, C, N, Cp, E)
 	\]
-   Con las siguientes dependencias funcionales
-   \[\mathcal{F} = \{I \rightarrow FCNCpE, Cp \rightarrow E\}\]
-   Si bien existen dependencias funcionales que violan la tercera forma normal,
-   sólo es una dependencia funcional que sólo concierne a dos atrbutos, por lo
-   que so consideró que no vale la pena normalizar esta relación, puesto que el
-   trabajo neesario para hacerlo es demasiado para la disminución de redundancia
-   obtenida.
+    Con las siguientes dependencias funcionales
+    \[\mathcal{F} = \{I \rightarrow FCNCpE, Cp \rightarrow E\}\]
+    Si bien existen dependencias funcionales que violan la tercera forma normal,
+    sólo es una dependencia funcional que sólo concierne a dos atrbutos, por lo
+    que so consideró que no vale la pena normalizar esta relación, puesto que el
+    trabajo neesario para hacerlo es demasiado en comparación a la disminución de
+    redundancia obtenida.
 	
 \end{document}
